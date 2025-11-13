@@ -27,8 +27,8 @@ using namespace vex;
   // Define Values for the Chassis here:
   Drive chassis
   (
-    motor_group(L1, L2), // Left drive train motors
-    motor_group(R1, R2), // Right drive train motors
+    motor_group(L1, L2, L3, L4), // Left drive train motors
+    motor_group(R1, R2, R3, R4), // Right drive train motors
     PORT6,               // Inertial Sensor Port
     3,                   // The diameter size of the wheel in inches
     1,                   // 
@@ -162,7 +162,17 @@ void usercontrol()
   // User control code here, inside the loop
   while (1) {
 
-
+    if(Controller1.ButtonA.pressing()){
+      In1.spin(forward, 12, volt);
+    }else if(Controller1.ButtonB.pressing()){
+      In3.spin(forward, 12, volt);
+    }else if(Controller1.ButtonY.pressing()){
+      In2.spin(forward, 12, volt);
+    }else{
+      In2.spin(forward, 0, volt);
+      In3.spin(forward, 0, volt);
+      In1.spin(forward, 0, volt);
+    }
     chassis.arcade();
     wait(20, msec); // Sleep the task for a short amount of time to
   }

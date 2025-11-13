@@ -9,10 +9,18 @@ using code = vision::code;
 extern brain Brain;
 extern controller Controller1;
 
+extern motor In1;
+extern motor In2;
+extern motor In3;
+
 extern motor R1;
 extern motor R2;
+extern motor R3;
+extern motor R4;
 extern motor L1;
 extern motor L2;
+extern motor L3;
+extern motor L4;
 
 extern motor_group rightDrive;
 extern motor_group leftDrive;

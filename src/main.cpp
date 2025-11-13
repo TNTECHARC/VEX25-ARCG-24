@@ -162,17 +162,54 @@ void usercontrol()
   // User control code here, inside the loop
   while (1) {
 
-    if(Controller1.ButtonA.pressing()){
+    // if(Controller1.ButtonA.pressing()){
+    //   In1.spin(forward, 12, volt);
+    // }else if(Controller1.ButtonB.pressing()){
+    //   In3.spin(forward, 12, volt);
+    // }else if(Controller1.ButtonY.pressing()){
+    //   In2.spin(forward, 12, volt);
+    // }else{
+    //   In2.spin(forward, 0, volt);
+    //   In3.spin(forward, 0, volt);
+    //   In1.spin(forward, 0, volt);
+    // }
+
+    //TO DO
+
+    // L1 - Intake in
+    if(Controller1.ButtonL1.pressing())
+    {
       In1.spin(forward, 12, volt);
-    }else if(Controller1.ButtonB.pressing()){
-      In3.spin(forward, 12, volt);
-    }else if(Controller1.ButtonY.pressing()){
-      In2.spin(forward, 12, volt);
-    }else{
-      In2.spin(forward, 0, volt);
-      In3.spin(forward, 0, volt);
-      In1.spin(forward, 0, volt);
     }
+    else if(Controller1.ButtonL2.pressing()){ // L2 - Intake Out
+      In1.spin(reverse, 12, volt);
+    }
+    else {
+      In1.spin(reverse, 0, volt);
+    }
+    
+
+    // R1 - Middle Goal Outtake
+    if(Controller1.ButtonR1.pressing()) 
+    {
+      In2.spin(forward, 12, volt);
+      In3.spin(reverse, 12, volt);
+    }
+    else if(Controller1.ButtonR2.pressing()) 
+    {
+      In2.spin(forward, 12, volt);
+      In3.spin(forward, 12, volt);
+    }
+    else if(Controller1.ButtonA.pressing()) 
+    {
+      In2.spin(forward, 12, volt);
+    }
+    else
+    {
+      In2.spin(forward, 0, volt);
+      In3.spin(forward, 0, volt); // R2 - High Goal Outtake
+    }
+
     chassis.arcade();
     wait(20, msec); // Sleep the task for a short amount of time to
   }

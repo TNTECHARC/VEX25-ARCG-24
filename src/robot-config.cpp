@@ -10,10 +10,12 @@ controller Controller1;
 
 //////////// Intake Motors ////////////
 
-motor In1 = motor(PORT1, ratio6_1, true);
+motor intake = motor(PORT1, ratio6_1, true);
 
-motor In2 = motor(PORT4, ratio6_1, true);
-motor In3 = motor(PORT5, ratio6_1, true);
+motor chainIntake1 = motor(PORT4, ratio18_1, true);
+motor chainIntake2 = motor(PORT16, ratio18_1, false);
+
+motor outtake = motor(PORT5, ratio6_1, true);
 
 ///////////////////////////////////////////
 

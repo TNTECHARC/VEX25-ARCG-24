@@ -179,35 +179,39 @@ void usercontrol()
     // L1 - Intake in
     if(Controller1.ButtonL1.pressing())
     {
-      In1.spin(forward, 12, volt);
+      intake.spin(forward, 12, volt);
     }
     else if(Controller1.ButtonL2.pressing()){ // L2 - Intake Out
-      In1.spin(reverse, 12, volt);
+      intake.spin(reverse, 12, volt);
     }
     else {
-      In1.spin(reverse, 0, volt);
+      intake.spin(reverse, 0, volt);
     }
     
 
     // R1 - Middle Goal Outtake
     if(Controller1.ButtonR1.pressing()) 
     {
-      In2.spin(forward, 12, volt);
-      In3.spin(reverse, 12, volt);
+      chainIntake1.spin(forward, 12, volt);
+      chainIntake2.spin(forward, 12, volt);
+      outtake.spin(reverse, 12, volt);
     }
     else if(Controller1.ButtonR2.pressing()) 
     {
-      In2.spin(forward, 12, volt);
-      In3.spin(forward, 12, volt);
+      chainIntake1.spin(forward, 12, volt);
+      chainIntake2.spin(forward, 12, volt);
+      outtake.spin(forward, 12, volt);
     }
     else if(Controller1.ButtonA.pressing()) 
     {
-      In2.spin(forward, 12, volt);
+      chainIntake1.spin(forward, 12, volt);
+      chainIntake2.spin(forward, 12, volt);
     }
     else
     {
-      In2.spin(forward, 0, volt);
-      In3.spin(forward, 0, volt); // R2 - High Goal Outtake
+      chainIntake1.spin(forward, 0, volt);
+      chainIntake2.spin(forward, 0, volt);
+      outtake.spin(forward, 0, volt);
     }
 
     chassis.arcade();

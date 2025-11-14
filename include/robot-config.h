@@ -9,9 +9,10 @@ using code = vision::code;
 extern brain Brain;
 extern controller Controller1;
 
-extern motor In1;
-extern motor In2;
-extern motor In3;
+extern motor intake;
+extern motor chainIntake1;
+extern motor chainIntake2;
+extern motor outtake;
 
 extern motor R1;
 extern motor R2;

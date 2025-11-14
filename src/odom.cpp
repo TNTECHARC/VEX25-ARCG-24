@@ -42,8 +42,6 @@ Odom::Odom(){
     this->lateralRotationDistance = 0.0;
 }
 
-
-
 /// @brief Sets all rotation degrees to 0.0
 void Odom::resetRotation(){
     forwardDegreesL = 0.0;

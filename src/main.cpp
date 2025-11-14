@@ -151,7 +151,6 @@ void autonomous()
   //     Auton_8();
   //     break;
   //   default:
-  //     DefaultAuton();
   //     break;
   // }
 }
@@ -181,16 +180,15 @@ void usercontrol()
     {
       intake.spin(forward, 12, volt);
     }
-    else if(Controller1.ButtonL2.pressing()){ // L2 - Intake Out
+    // L2 - Intake Out
+    else if(Controller1.ButtonL2.pressing())
+    {
       intake.spin(reverse, 12, volt);
+      chainIntake1.spin(reverse, 12, volt);
+      chainIntake2.spin(reverse, 12, volt);
     }
-    else {
-      intake.spin(reverse, 0, volt);
-    }
-    
-
     // R1 - Middle Goal Outtake
-    if(Controller1.ButtonR1.pressing()) 
+    else if(Controller1.ButtonR1.pressing()) 
     {
       chainIntake1.spin(forward, 12, volt);
       chainIntake2.spin(forward, 12, volt);
@@ -207,10 +205,16 @@ void usercontrol()
       chainIntake1.spin(forward, 12, volt);
       chainIntake2.spin(forward, 12, volt);
     }
-    else
+    else if(Controller1.ButtonB.pressing()) 
     {
+      chainIntake1.spin(reverse, 12, volt);
+      chainIntake2.spin(reverse, 12, volt);
+    }
+    else
+    { 
       chainIntake1.spin(forward, 0, volt);
       chainIntake2.spin(forward, 0, volt);
+      intake.spin(reverse, 0, volt);
       outtake.spin(forward, 0, volt);
     }
 
@@ -266,7 +270,9 @@ void setDriveTrainConstants()
 /// @brief Auton Slot 1 - Write code for route within this function.
 void Auton_1()
 {
-    Brain.Screen.print("Auton 1 running.");
+    chassis.driveDistance(24);
+    chassis.turnToAngle(30);
+    chassis.moveToPosition(2,2);
 }
 
 /// @brief Auton Slot 2 - Write code for route within this function.
@@ -309,5 +315,4 @@ void Auton_7()
 void Auton_8()
 {
     Brain.Screen.print("Auton 8 running.");
-    
 }

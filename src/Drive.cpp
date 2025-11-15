@@ -14,7 +14,8 @@ inertialSensor(inertial(inertialPORT))
 {
     this->wheelDiameter = wheelDiameter;
     this->wheelRatio = wheelRatio;
-    this->maxVoltage = maxVoltage;
+    this->driveMaxVoltage = maxVoltage;
+    this->turnMaxVoltage = maxVoltage;
     this->odomType = odomType;
 
     this->chassisOdometry = Odom(2, 1.5, 1.5);
@@ -33,6 +34,16 @@ inertialSensor(inertial(inertialPORT))
     //         this->chassisOdometry = Odom(wheelDiameter45, leftRotationDistance, rightRotationDistance);
     //         break;
     // }
+}
+
+void Drive::setDriveMaxVoltage(float maxVoltage)
+{
+    driveMaxVoltage = maxVoltage;
+}
+
+void Drive::setTurnMaxVoltage(float maxVoltage)
+{
+    turnMaxVoltage = maxVoltage;
 }
 
 /// @brief Sets the PID constants for the Drive distance 
@@ -74,8 +85,8 @@ void Drive::arcade()
 {
     int leftY = Controller1.Axis3.position(percent);
     int rightX = Controller1.Axis1.position(percent);
-    leftDrive.spin(forward, leftY+rightX, percent);
-    rightDrive.spin(forward, leftY-rightX, percent);
+    leftDrive.spin(forward, leftY-rightX, percent);
+    rightDrive.spin(forward, leftY+rightX, percent);
 }
 
 
@@ -169,6 +180,14 @@ void Drive::brake(bool left, bool right, brakeType type)
 /// @param distance The distance to drive in inches
 void Drive::driveDistance(float distance)
 {
+    driveDistance(distance, driveMaxVoltage);
+}
+
+/// @brief Uses the drivetrain to drive the given distance in inches
+/// @param distance The distance to drive in inches
+/// @param maxVoltage The max amount of voltage used to drive
+void Drive::driveDistance(float distance, float maxVoltage)
+{
     // Creates PID objects for linear and angular output
     //float Kp, float Ki, float Kd, float settleError, float timeToSettle, float endTime
     PID linearPID(driveKp, driveKi, driveKd, driveSettleError, driveTimeToSettle, driveEndTime);
@@ -190,8 +209,6 @@ void Drive::driveDistance(float distance)
         float linearError = distance - getCurrentMotorPosition();
         float angularError = degTo180(startHeading - gyro1.heading());
 
-        writeToCard("error.csv", linearError);
-
         // Sets the linear output and angular output to the output of the error passed through the PID compute functions
         float linearOutput = linearPID.compute(linearError);
         float angularOutput = angularPID.compute(angularError);
@@ -204,26 +221,40 @@ void Drive::driveDistance(float distance)
         driveMotors(linearOutput - angularOutput, linearOutput + angularOutput);
 
         wait(10, msec);
-        Brain.Screen.clearScreen();
     }
     // Stops the motors once PID has settled
     //brake();
     updatePosition();
 }
 
-/// @brief Turns the robot a set amount of degrees using odometry
-/// @param turnDegrees The number of degrees the robot turns (0-359)
+/// @brief Turns the robot a set amount of degrees
+/// @param turnDegrees A number in degrees the robot should rotate
 void Drive::turn(float turnDegrees){
     turnToAngle(turnDegrees + gyro1.heading());
 }
 
+/// @brief Turns the robot a set amount of degrees
+/// @param turnDegrees A number in degrees the robot should rotate
+/// @param maxVoltage The max amount of voltage used to turn
+void Drive::turn(float turnDegrees, float maxVoltage){
+    turnToAngle(turnDegrees + gyro1.heading(), maxVoltage);
+}
+
 /// @brief Turns to an absolute specific angle
-/// @param desiredHeading Desired facing angle
-/// @param currentHeading Current facing angle
-void Drive::turnToAngle(float angle){
+/// @param angle The angle to turn to in degrees (0 - 360)
+void Drive::turnToAngle(float angle)
+{
+    turnToAngle(angle, turnMaxVoltage);
+}
+
+/// @brief Turns to an absolute specific angle
+/// @param angle The angle to turn to in degrees (0 - 360)
+/// @param maxVoltage The max amount of voltage used to turn
+void Drive::turnToAngle(float angle, float maxVoltage)
+{
     updatePosition();
     angle = inTermsOfNegative180To180(angle);
-    PID turnPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle*10, turnEndTime);
+    PID turnPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle, turnEndTime);
     do
     {
         float error = inTermsOfNegative180To180(gyro1.heading()-angle);
@@ -240,14 +271,86 @@ void Drive::turnToAngle(float angle){
 /// @param desX Desired X position
 /// @param desY Desired Y position
 void Drive::moveToPosition(float desX, float desY){
-    updatePosition();
-    float deltaX = chassisOdometry.getXPosition()-desX;
-    float deltaY = chassisOdometry.getYPosition()-desY;
-    float distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
-    float angle = atan(deltaX/deltaY) * (180.0/M_PI);
+    // Creates PID objects for linear and angular output
+    //float Kp, float Ki, float Kd, float settleError, float timeToSettle, float endTime
+    PID linearPID(driveKp, driveKi, driveKd, driveSettleError, driveTimeToSettle, driveEndTime);
+    PID angularPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle, turnEndTime);
 
-    turnToAngle(angle);
-    driveDistance(distance);
+    turnToPosition(desX, desY);
+    
+    updatePosition();
+    // Sets the starting variables for the Position and Heading
+    float startX = chassisOdometry.getXPosition();
+    float startY = chassisOdometry.getYPosition();
+    float startHeading = gyro1.heading();
+
+    //  Loops while the linear PID has not yet settled
+    while(!linearPID.isSettled())
+    {
+        updatePosition();
+        // Updates the Error for the linear values and the angular values
+        float linearError = sqrt(pow(desX-chassisOdometry.getXPosition(), 2.0) + pow(desY-chassisOdometry.getYPosition(), 2.0));
+        float angularError = degTo180(startHeading - gyro1.heading());
+
+        // Sets the linear output and angular output to the output of the error passed through the PID compute functions
+        float linearOutput = linearPID.compute(linearError);
+        float angularOutput = angularPID.compute(angularError);
+
+        // Clamps the values of the output to fit within the -12 to 12 volt limit of the vex motors
+        linearOutput = clamp(linearOutput, -driveMaxVoltage, driveMaxVoltage);
+        angularOutput = clamp(angularOutput, -driveMaxVoltage, driveMaxVoltage);
+
+        // Drives motors according to the linear Output and includes the linear Output to keep the robot in a straight path relative to is start heading
+        driveMotors(linearOutput - angularOutput, linearOutput + angularOutput);
+
+        wait(10, msec);
+    }
+    // Stops the motors once PID has settled
+    //brake();
+    updatePosition();
+}
+
+void Drive::driveDistanceWithOdom(float distance){
+    // Creates PID objects for linear and angular output
+    //float Kp, float Ki, float Kd, float settleError, float timeToSettle, float endTime
+    PID linearPID(driveKp, driveKi, driveKd, driveSettleError, driveTimeToSettle, driveEndTime);
+    PID angularPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle, turnEndTime);
+    
+    updatePosition();
+    // Sets the starting variables for the Position and Heading
+    float xToGo = cos(degToRad(gyro1.heading()))* distance;
+    float yToGo = sin(degToRad(gyro1.heading()))* distance;
+    float startHeading = gyro1.heading();
+
+    float targetX = chassisOdometry.getXPosition() + xToGo;
+    float targetY = chassisOdometry.getYPosition() + yToGo;
+
+    //  Loops while the linear PID has not yet settled
+    while(!linearPID.isSettled())
+    {
+        updatePosition();
+        // Updates the Error for the linear values and the angular values
+        float linearError = sqrt(pow(targetX - chassisOdometry.getXPosition(), 2.0) + pow(targetY - chassisOdometry.getYPosition(), 2.0));
+        float angularError = degTo180(startHeading - gyro1.heading());
+
+        xToGo = cos(degToRad(gyro1.heading())) * linearError;
+        yToGo = sin(degToRad(gyro1.heading())) * linearError;
+
+        // Sets the linear output and angular output to the output of the error passed through the PID compute functions
+        float linearOutput = linearPID.compute(linearError);
+        float angularOutput = angularPID.compute(angularError);
+
+        // Clamps the values of the output to fit within the -12 to 12 volt limit of the vex motors
+        linearOutput = clamp(linearOutput, -driveMaxVoltage, driveMaxVoltage);
+        angularOutput = clamp(angularOutput, -driveMaxVoltage, driveMaxVoltage);
+
+        // Drives motors according to the linear Output and includes the linear Output to keep the robot in a straight path relative to is start heading
+        driveMotors(linearOutput - angularOutput, linearOutput + angularOutput);
+
+        wait(10, msec);
+    }
+    // Stops the motors once PID has settled
+    //brake();
     updatePosition();
 }
 

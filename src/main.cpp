@@ -19,7 +19,7 @@ using namespace vex;
   // Competition Instance
   competition Competition;
 
-  int odomType = TWO_AT_45;
+  int odomType = NO_ODOM;
 
   bool isInAuton = false;
   int lastPressed = 0;
@@ -119,7 +119,8 @@ void autonomous()
 {
   isInAuton = true;
   chassis.setPosition(0,0,0);
-  chassis.driveDistance(15);
+  Auton_1();
+  //chassis.driveDistance(15);
   //chassis.turnToAngle(90);
   //chassis.driveDistance(12);
   //chassis.moveToPosition(0,0);
@@ -192,13 +193,13 @@ void usercontrol()
     {
       chainIntake1.spin(forward, 12, volt);
       chainIntake2.spin(forward, 12, volt);
-      outtake.spin(reverse, 12, volt);
+      outtake.spin(reverse, 9, volt);
     }
     else if(Controller1.ButtonR2.pressing()) 
     {
       chainIntake1.spin(forward, 12, volt);
       chainIntake2.spin(forward, 12, volt);
-      outtake.spin(forward, 12, volt);
+      outtake.spin(forward, 9, volt);
     }
     else if(Controller1.ButtonA.pressing()) 
     {
@@ -247,9 +248,9 @@ void setDriveTrainConstants()
 {
     // Set the Drive PID values for the DriveTrain
     chassis.setDriveConstants(
-        0.2, // Kp - Proportion Constant
-        0.0, // Ki - Integral Constant
-        0, // Kd - Derivative Constant
+        0.5, // Kp - Proportion Constant
+        0.01, // Ki - Integral Constant
+        1, // Kd - Derivative Constant
         0.05, // Settle Error
         300, // Time to Settle
         300000 // End Time
@@ -257,11 +258,11 @@ void setDriveTrainConstants()
 
     // Set the Turn PID values for the DriveTrain
     chassis.setTurnConstants(
-        0.5,    // Kp - Proportion Constant
+        0.05,    // Kp - Proportion Constant
         0,      // Ki - Integral Constant
-        0.1,      // Kd - Derivative Constant 
+        0.3,      // Kd - Derivative Constant 
         0.5,    // Settle Error
-        300,    // Time to Settle
+        1,    // Time to Settle
         3000    // End Time
     );
     
@@ -270,9 +271,12 @@ void setDriveTrainConstants()
 /// @brief Auton Slot 1 - Write code for route within this function.
 void Auton_1()
 {
-    chassis.driveDistance(24);
-    chassis.turnToAngle(30);
-    chassis.moveToPosition(2,2);
+    chassis.driveDistance(30);
+    chassis.turnToAngle(45);
+    intake.spin(reverse, 12, volt);
+    chassis.driveDistance(3);
+    chassis.turnToAngle(90);
+    chassis.driveDistance(16);
 }
 
 /// @brief Auton Slot 2 - Write code for route within this function.

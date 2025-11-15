@@ -30,8 +30,8 @@ using namespace vex;
     motor_group(L1, L2, L3, L4), // Left drive train motors
     motor_group(R1, R2, R3, R4), // Right drive train motors
     PORT6,               // Inertial Sensor Port
-    3,                   // The diameter size of the wheel in inches
-    1,                   // 
+    3.25,                   // The diameter size of the wheel in inches
+    (48/36),                   // Gear-Ratio
     12,                   // The maximum amount of the voltage used in the drivebase (1 - 12)
     odomType
   );
@@ -248,21 +248,21 @@ void setDriveTrainConstants()
 {
     // Set the Drive PID values for the DriveTrain
     chassis.setDriveConstants(
-        0.5, // Kp - Proportion Constant
-        0.01, // Ki - Integral Constant
-        1, // Kd - Derivative Constant
-        0.05, // Settle Error
-        300, // Time to Settle
+        0.6, // Kp - Proportion Constant
+        0.031, // Ki - Integral Constant
+        0.0, // Kd - Derivative Constant
+        1, // Settle Error
+        500, // Time to Settle
         300000 // End Time
     );
 
     // Set the Turn PID values for the DriveTrain
     chassis.setTurnConstants(
-        0.05,    // Kp - Proportion Constant
+        0.1,    // Kp - Proportion Constant
         0,      // Ki - Integral Constant
-        0.3,      // Kd - Derivative Constant 
-        0.5,    // Settle Error
-        1,    // Time to Settle
+        0.8,      // Kd - Derivative Constant 
+        1,    // Settle Error
+        100,    // Time to Settle
         3000    // End Time
     );
     
@@ -271,12 +271,12 @@ void setDriveTrainConstants()
 /// @brief Auton Slot 1 - Write code for route within this function.
 void Auton_1()
 {
-    chassis.driveDistance(30);
-    chassis.turnToAngle(45);
-    intake.spin(reverse, 12, volt);
+    chassis.driveDistance(24);
+    //chassis.turnToAngle(-90);
+    /*intake.spin(reverse, 12, volt);
     chassis.driveDistance(3);
     chassis.turnToAngle(90);
-    chassis.driveDistance(16);
+    chassis.driveDistance(16);*/
 }
 
 /// @brief Auton Slot 2 - Write code for route within this function.

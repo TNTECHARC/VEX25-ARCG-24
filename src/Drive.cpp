@@ -257,7 +257,7 @@ void Drive::turnToAngle(float angle, float maxVoltage)
     PID turnPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle, turnEndTime);
     do
     {
-        float error = inTermsOfNegative180To180(gyro1.heading()-angle);
+        float error = inTermsOfNegative180To180(angle-gyro1.heading());
         float output = turnPID.compute(error);
         output = clamp(output, -maxVoltage, maxVoltage);
         driveMotors(output, -output);

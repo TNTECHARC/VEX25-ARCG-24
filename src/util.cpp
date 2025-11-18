@@ -79,3 +79,4 @@ void writeToCard(std::string filename, float number)
     file << number << ",";
     file.close();
 }
+

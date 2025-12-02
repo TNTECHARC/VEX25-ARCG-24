@@ -162,6 +162,9 @@ void usercontrol()
   // User control code here, inside the loop
   while (1) {
 
+    if ()
+
+
     // if(Controller1.ButtonA.pressing()){
     //   In1.spin(forward, 12, volt);
     // }else if(Controller1.ButtonB.pressing()){
@@ -175,7 +178,7 @@ void usercontrol()
     // }
 
     //TO DO
-
+    /*
     // L1 - Intake in
     if(Controller1.ButtonL1.pressing())
     {
@@ -218,7 +221,7 @@ void usercontrol()
       intake.spin(reverse, 0, volt);
       outtake.spin(forward, 0, volt);
     }
-
+    */
     chassis.arcade();
     wait(20, msec); // Sleep the task for a short amount of time to
   }

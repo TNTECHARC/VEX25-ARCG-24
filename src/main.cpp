@@ -161,8 +161,31 @@ void usercontrol()
 {
   // User control code here, inside the loop
   while (1) {
+    bool outBlue = true;
 
-    if ()
+    if (controller1.ButtonRight.pressed){
+      if (outBlue = true){
+        outBlue = false;
+      }else{
+        outBlue = true;
+      }
+    }
+
+
+    if (outBlue = true){
+      if(controller1.ButtonUp.pressed){
+        blueTop();
+      }else(controller1.ButtonLeft.pressed){
+        blueMiddle();
+      }
+    }
+    }else if(outBlue = false){
+      if(controller1.ButtonUp.pressed){
+        redTop();
+      }else(controller1.ButtonLeft.pressed){
+        redmiddle();
+      }
+    }
 
 
     // if(Controller1.ButtonA.pressing()){
@@ -178,7 +201,7 @@ void usercontrol()
     // }
 
     //TO DO
-    /*
+    
     // L1 - Intake in
     if(Controller1.ButtonL1.pressing())
     {
@@ -221,7 +244,7 @@ void usercontrol()
       intake.spin(reverse, 0, volt);
       outtake.spin(forward, 0, volt);
     }
-    */
+    
     chassis.arcade();
     wait(20, msec); // Sleep the task for a short amount of time to
   }

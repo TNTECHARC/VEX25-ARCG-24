@@ -44,9 +44,3 @@ rotation lateral = rotation(PORT2);
 inertial gyro1 = inertial(PORT6);
 
 /////////////////////////////////////////
-
-//////////// Optical Sensors ////////////
-
-Optical colSensor = optical(PORT15);
-
-/////////////////////////////////////////

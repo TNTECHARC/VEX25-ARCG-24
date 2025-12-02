@@ -31,5 +31,3 @@ extern rotation lateral;
 
 extern inertial gyro1;
 
-extern Optical colSensor;
-

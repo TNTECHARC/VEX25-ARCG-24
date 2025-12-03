@@ -33,7 +33,10 @@ using namespace vex;
     3.25,                   // The diameter size of the wheel in inches
     (48/36),                   // Gear-Ratio
     12,                   // The maximum amount of the voltage used in the drivebase (1 - 12)
-    odomType
+    odomType,
+    2,
+    1,
+    1
   );
 
 //////////////////////////////////////////////////////////////////////
@@ -62,9 +65,9 @@ void preAuton()
   int lastPressed = 0;
 
   // Calibrates/Resets the Brains sensors before the competition
-  gyro1.calibrate();
-  forwardR.resetPosition();
-  lateral.resetPosition();
+  inertial1.calibrate();
+  rotation1.resetPosition();
+  rotation2.resetPosition();
 
   vex::color colors[8] = {vex::color::red, vex::color::red, vex::color::red, vex::color::red, 
                           vex::color::blue, vex::color::blue, vex::color::blue, vex::color::blue};
@@ -163,7 +166,7 @@ void usercontrol()
   while (1) {
     bool outBlue = true;
 
-    if (controller1.ButtonRight.pressed){
+    if (Controller1.ButtonRight.pressed){
       if (outBlue = true){
         outBlue = false;
       }else{
@@ -173,7 +176,7 @@ void usercontrol()
 
 
     if (outBlue = true){
-      if(controller1.ButtonUp.pressed){
+      if(Controller1.ButtonUp.pressed){
         blueTop();
       }else(controller1.ButtonLeft.pressed){
         blueMiddle();

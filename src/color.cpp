@@ -6,7 +6,7 @@
 
 //////////// Optical Sensors ////////////
 
-Optical colSensor = optical(PORT15);
+optical colSensor = optical(PORT15);
 
 /////////////////////////////////////////
 void blueTop () {

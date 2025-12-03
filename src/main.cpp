@@ -159,50 +159,53 @@ void autonomous()
   //     break;
   // }
 }
-bool outBlue = true;
-
+bool blueGood = true;
+bool colorScoreOn = true;
+/// @brief Toggles the color selection between red and blue
 void ColorToggle(){
-  if (outBlue == true){
-    outBlue = false;
+  if (blueGood == true){
+    Brain.Screen.setFillColor(vex::color::red);
+    blueGood = false;
   }else{
-    outBlue = true;
+    Brain.Screen.setFillColor(vex::color::blue);
+    blueGood = true;
+  }
+}
+
+/// @brief Toggle color score
+void ColorScoreToggle(){
+  if (colorScoreOn == true){
+    colorScoreOn = false;
+  }else{
+    colorScoreOn = true;
   }
 }
 
 /// @brief Runs during the UserControl section of the competition
 void usercontrol() 
 { 
-  Controller1.ButtonRight.pressed(ColorToggle);
+  Controller1.ButtonRight.pressed(ColorToggle); // user control button right (change)
+  Controller1.ButtonDown.pressed(ColorScoreToggle); // user control button down (change)
+
   // User control code here, inside the loop
   while (1) {
-<<<<<<< Updated upstream
-    bool outBlue = true;
 
-    if (Controller1.ButtonRight.pressed){
-      if (outBlue = true){
-        outBlue = false;
-      }else{
-        outBlue = true;
-      }
-    }
-
-
-    if (outBlue = true){
-      if(Controller1.ButtonUp.pressed){
-=======
-    if (outBlue == true){
-      if(Controller1.ButtonUp.pressing()){
-        
->>>>>>> Stashed changes
-        blueTop();
-      }else if(Controller1.ButtonLeft.pressing()){
-        blueMiddle();
-      }
-    }else if(outBlue == false){
-      if(Controller1.ButtonUp.pressing()){
-        redTop();
-      }else if(Controller1.ButtonLeft.pressing()){
-        redmiddle();
+    // outputs colors based on team color selection
+    if (colorScoreOn == true){
+      if (blueGood == true){
+        // outputs blue balls to desired output
+        if(Controller1.ButtonUp.pressing()){ // user control button up (change)
+          blueTop();
+        }else if(Controller1.ButtonLeft.pressing()){ // user control button left (change)
+          blueMiddle();
+        }
+        // outputs Red balls to desired output
+      }else if(blueGood == false){
+        if(Controller1.ButtonUp.pressing()){ // user control button up (change)
+          redTop();
+        }else if(Controller1.ButtonLeft.pressing()){ // user control button left (change)
+          redmiddle();
+        }
       }
     }
 

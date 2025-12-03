@@ -9,8 +9,10 @@
 optical colSensor = optical(PORT15);
 
 /////////////////////////////////////////
+
 void blueTop () {
     if (colSensor.color() == vex::color::blue) {
+        
         chainIntake1.spin(forward, 12, volt);
         chainIntake2.spin(forward, 12, volt);
         outtake.spin(forward, 9, volt);

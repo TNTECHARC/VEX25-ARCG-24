@@ -11,6 +11,7 @@
 #include "screen.h"
 #include "util.h"
 #include "Drive.h"
+#include "color.h"
 
 using namespace vex;
 
@@ -158,12 +159,23 @@ void autonomous()
   //     break;
   // }
 }
+bool outBlue = true;
+
+void ColorToggle(){
+  if (outBlue == true){
+    outBlue = false;
+  }else{
+    outBlue = true;
+  }
+}
 
 /// @brief Runs during the UserControl section of the competition
 void usercontrol() 
-{
+{ 
+  Controller1.ButtonRight.pressed(ColorToggle);
   // User control code here, inside the loop
   while (1) {
+<<<<<<< Updated upstream
     bool outBlue = true;
 
     if (Controller1.ButtonRight.pressed){
@@ -177,15 +189,19 @@ void usercontrol()
 
     if (outBlue = true){
       if(Controller1.ButtonUp.pressed){
+=======
+    if (outBlue == true){
+      if(Controller1.ButtonUp.pressing()){
+        
+>>>>>>> Stashed changes
         blueTop();
-      }else(controller1.ButtonLeft.pressed){
+      }else if(Controller1.ButtonLeft.pressing()){
         blueMiddle();
       }
-    }
-    }else if(outBlue = false){
-      if(controller1.ButtonUp.pressed){
+    }else if(outBlue == false){
+      if(Controller1.ButtonUp.pressing()){
         redTop();
-      }else(controller1.ButtonLeft.pressed){
+      }else if(Controller1.ButtonLeft.pressing()){
         redmiddle();
       }
     }

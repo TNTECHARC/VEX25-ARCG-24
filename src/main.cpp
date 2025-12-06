@@ -11,6 +11,7 @@
 #include "screen.h"
 #include "util.h"
 #include "Drive.h"
+#include "autonFunctions.h"
 #include "color.h"
 
 using namespace vex;
@@ -344,12 +345,38 @@ void setDriveTrainConstants()
 /// @brief Auton Slot 1 - Write code for route within this function.
 void Auton_1()
 {
-    //chassis.driveDistance(48);
-    chassis.turnToAngle(-90);
-    /*intake.spin(reverse, 12, volt);
-    chassis.driveDistance(3);
+    chassis.driveDistance(26.75);
+    chassis.turnToAngle(10);
+    intake.spin(forward, 12, volt);
+    chassis.driveDistance(2);
+    chassis.turnToAngle(7);
+    chassis.driveDistance(2);
+    chassis.turnToAngle(15);
+    chassis.driveDistance(7);
+    chassis.turnToAngle(45);
+    chassis.driveDistance(14);
+    chainIntake1.spin(forward, 12, volt);
+    wait(2, seconds);
+    intake.spin(reverse, 12, volt);
+    wait(.1, seconds);
+    intake.spin(forward, 12, volt);
+    wait(.1, seconds);
+    intake.spin(reverse, 12, volt);
+    wait(.1, seconds);
+    intake.spin(forward, 12, volt);
+    chassis.driveDistance(-45);
     chassis.turnToAngle(90);
-    chassis.driveDistance(16);*/
+    chassis.driveDistance(24);
+    chassis.turnToAngle(90);
+    chassis.driveDistance(-10);
+    outtake.spin(reverse, 12, volt);
+    wait(5, seconds);
+
+    //chassis.driveDistance(18);
+    
+    // chassis.driveDistance(3);
+    // chassis.turnToAngle(90);
+    // chassis.driveDistance(16);
 }
 
 /// @brief Auton Slot 2 - Write code for route within this function.

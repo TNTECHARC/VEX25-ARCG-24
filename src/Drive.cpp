@@ -231,7 +231,6 @@ void Drive::driveDistance(float distance, float maxVoltage)
 
         // Sets the linear output and angular output to the output of the error passed through the PID compute functions
         float linearOutput = linearPID.compute(linearError);
-        std:: cout << "Linear Error: " << linearError << " Linear Output: " << linearOutput << std::endl;
         float angularOutput = angularPID.compute(angularError);
 
         // Clamps the values of the output to fit within the -12 to 12 volt limit of the vex motors
@@ -288,6 +287,11 @@ void Drive::turnToAngle(float angle, float maxVoltage)
         std::cout << "Turn Error: " << error << std::endl;
         float output = turnPID.compute(error);
         output = clamp(output, -maxVoltage, maxVoltage);
+
+        if(fabs(output) < 2 && fabs(output) > .1){
+            output = (output/fabs(output)) * 3;
+        }
+
         driveMotors(-output, output);
         task::sleep(10);
     }while(!turnPID.isSettled());

@@ -203,8 +203,8 @@ void usercontrol()
     // L1 - Intake in
     if(Controller1.ButtonL1.pressing())
     {
-      chainIntake1.spin(forward, 0, volt);
-      chainIntake2.spin(forward, 0, volt);
+      chainIntake1.spin(forward, 12, volt);
+      chainIntake2.spin(forward, 12, volt);
       intake.spin(forward, 12, volt);
     }
     // L2 - Intake Out
@@ -321,9 +321,9 @@ void setDriveTrainConstants()
 {
     // Set the Drive PID values for the DriveTrain
     chassis.setDriveConstants(
-        0.666, // Kp - Proportion Constant
-        0.003, // Ki - Integral Constant
-        0.003, // Kd - Derivative Constant
+        0.5, // Kp - Proportion Constant
+        0.0001, // Ki - Integral Constant
+        0.9, // Kd - Derivative Constant
         1, // Settle Error
         500, // Time to Settle
         3000 // End Time

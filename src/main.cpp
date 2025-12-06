@@ -357,12 +357,6 @@ void Auton_1()
     chassis.driveDistance(14);
     chainIntake1.spin(forward, 12, volt);
     wait(2, seconds);
-    intake.spin(reverse, 12, volt);
-    wait(.1, seconds);
-    intake.spin(forward, 12, volt);
-    wait(.1, seconds);
-    intake.spin(reverse, 12, volt);
-    wait(.1, seconds);
     intake.spin(forward, 12, volt);
     chassis.driveDistance(-45);
     chassis.turnToAngle(90);

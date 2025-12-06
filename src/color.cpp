@@ -1,86 +1,63 @@
 #pragma once
 #include "color.h"
-#include "vex.h"
 
 
+bool topSensor = false;
+//
 
-
-//////////// Optical Sensors ////////////
-
-optical bottomColorSensor = optical(PORT15); // replace port
-optical topColorSensor = optical(PORT20); // replace port
-optical colSensor = optical(100); // dummy initialization
-
-/////////////////////////////////////////
+//
 
 /// @brief gives priority to first color sensor 
-void colorSensorPriority(optical &currentSensor){
-
-  if (topColorSensor.isNearObject()){ // gives priority to top color sensor
-    currentSensor = topColorSensor;
-
+void colorSensorPriority(bool &topSensor){
+    if (topColorSensor.color() == vex::color::blue || topColorSensor.color() == vex::color::red){ // gives priority to top color sensor
+    topSensor = true;
+    std::cout << "Top" << std::endl;
   }else{ // gives priority to bottom color sensor
-    currentSensor = bottomColorSensor;
+    topSensor = false;
+    std::cout << "Bottom" << std::endl;
   }
 }
 
 /// @brief output blue balls to top outtake
 void blueTop () {
-    colorSensorPriority(colSensor); // assign current sensor based on priority
-
+    colorSensorPriority(topSensor); // assign current sensor based on priority
+    chainIntake1.spin(forward, 12, volt);
+    chainIntake2.spin(forward, 12, volt);
     // check color and output accordingly (blue to top, red to middle)
-    if (colSensor.color() == vex::color::blue) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(forward, 9, volt);
-    } else if (colSensor.color() == vex::color::red) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(reverse, 9, volt);
+    if (topSensor == true){
+        if (topColorSensor.color() == vex::color::blue) {
+            outtake.spin(reverse, 9, volt);
+        } else if (topColorSensor.color() == vex::color::red) {
+            outtake.spin(forward, 9, volt);
+        }
+    }else{
+        if (bottomColorSensor.color() == vex::color::blue) {
+            outtake.spin(reverse, 9, volt);
+        } else if (bottomColorSensor.color() == vex::color::red) {
+            outtake.spin(forward, 9, volt);
+        }
     }
 }
 /// @brief output blue balls to middle outtake
 void blueMiddle () {
-    colorSensorPriority(colSensor); // assign current sensor based on priority
+    colorSensorPriority(topSensor); // assign current sensor based on priority
+    
+    // move main chain 
+    chainIntake1.spin(forward, 12, volt);
+    chainIntake2.spin(forward, 12, volt);
 
     // check color and output accordingly (blue to middle, red to top)
-    if (colSensor.color() == vex::color::blue) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(reverse, 9, volt);
-    } else if (colSensor.color() == vex::color::red) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(forward, 9, volt);
-    }
-}
-/// @brief output red balls to top outtake
-void redTop () {
-    colorSensorPriority(colSensor); // assign current sensor based on priority
-
-    // check color and output accordingly (red to top, blue to middle)
-    if (colSensor.color() == vex::color::red) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(forward, 9, volt);
-    } else if (colSensor.color() == vex::color::blue) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(reverse, 9, volt);
-    }
-}
-/// @brief output red balls to middle outtake
-void redmiddle () {
-    colorSensorPriority(colSensor); // assign current sensor based on priority
-
-    // check color and output accordingly (red to middle, blue to top)
-    if (colSensor.color() == vex::color::red) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(reverse, 9, volt);
-    } else if (colSensor.color() == vex::color::blue) {
-        chainIntake1.spin(forward, 12, volt);
-        chainIntake2.spin(forward, 12, volt);
-        outtake.spin(forward, 9, volt);
+    if (topSensor == true){
+        if (topColorSensor.color() == vex::color::blue) {
+            outtake.spin(forward, 9, volt);
+        } else if (topColorSensor.color() == vex::color::red) {
+            outtake.spin(reverse, 9, volt);
+        }
+    }else{
+        if (bottomColorSensor.color() == vex::color::blue) {
+            outtake.spin(forward, 9, volt);
+        } else if (bottomColorSensor.color() == vex::color::red) {
+            outtake.spin(reverse, 9, volt);
+        }
     }
 }

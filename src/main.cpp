@@ -159,74 +159,52 @@ void autonomous()
   //     break;
   // }
 }
+
 bool blueGood = true;
 bool colorScoreOn = true;
-/// @brief Toggles the color selection between red and blue
-void ColorToggle(){
-  if (blueGood == true){
-    Brain.Screen.setFillColor(vex::color::red);
-    blueGood = false;
-  }else{
-    Brain.Screen.setFillColor(vex::color::blue);
-    blueGood = true;
-  }
-}
 
-/// @brief Toggle color score
-void ColorScoreToggle(){
-  if (colorScoreOn == true){
-    colorScoreOn = false;
-  }else{
-    colorScoreOn = true;
+/// @brief Toggles the color selection between red and blue
+  void ColorToggle(){
+    if (blueGood == true){
+      Brain.Screen.setFillColor(vex::color::red);
+      blueGood = false;
+    }else{
+      Brain.Screen.setFillColor(vex::color::blue);
+      blueGood = true;
+    }
+    waitUntil(!Controller1.ButtonRight.pressing());
   }
-}
+
+  /// @brief Toggle color score
+  void ColorScoreToggle(){
+      if (colorScoreOn == true){
+        colorScoreOn = false;
+      }else{
+        colorScoreOn = true;
+    }
+    waitUntil(!Controller1.ButtonDown.pressing());
+  }
 
 /// @brief Runs during the UserControl section of the competition
 void usercontrol() 
 { 
+  bottomColorSensor.setLight(ledState::on);
+  bottomColorSensor.integrationTime(20);
+  topColorSensor.setLight(ledState::on);
+  topColorSensor.integrationTime(100);
+
   Controller1.ButtonRight.pressed(ColorToggle); // user control button right (change)
   Controller1.ButtonDown.pressed(ColorScoreToggle); // user control button down (change)
 
   // User control code here, inside the loop
-  while (1) {
-
-    // outputs colors based on team color selection
-    if (colorScoreOn == true){
-      if (blueGood == true){
-        // outputs blue balls to desired output
-        if(Controller1.ButtonUp.pressing()){ // user control button up (change)
-          blueTop();
-        }else if(Controller1.ButtonLeft.pressing()){ // user control button left (change)
-          blueMiddle();
-        }
-        // outputs Red balls to desired output
-      }else if(blueGood == false){
-        if(Controller1.ButtonUp.pressing()){ // user control button up (change)
-          redTop();
-        }else if(Controller1.ButtonLeft.pressing()){ // user control button left (change)
-          redmiddle();
-        }
-      }
-    }
+  while (1) { 
 
 
-    // if(Controller1.ButtonA.pressing()){
-    //   In1.spin(forward, 12, volt);
-    // }else if(Controller1.ButtonB.pressing()){
-    //   In3.spin(forward, 12, volt);
-    // }else if(Controller1.ButtonY.pressing()){
-    //   In2.spin(forward, 12, volt);
-    // }else{
-    //   In2.spin(forward, 0, volt);
-    //   In3.spin(forward, 0, volt);
-    //   In1.spin(forward, 0, volt);
-    // }
-
-    //TO DO
-    
     // L1 - Intake in
     if(Controller1.ButtonL1.pressing())
     {
+      chainIntake1.spin(forward, 0, volt);
+      chainIntake2.spin(forward, 0, volt);
       intake.spin(forward, 12, volt);
     }
     // L2 - Intake Out
@@ -236,41 +214,88 @@ void usercontrol()
       chainIntake1.spin(reverse, 12, volt);
       chainIntake2.spin(reverse, 12, volt);
     }
-    // R1 - Middle Goal Outtake
-    else if(Controller1.ButtonR1.pressing()) 
-    {
-      chainIntake1.spin(forward, 12, volt);
-      chainIntake2.spin(forward, 12, volt);
-      outtake.spin(reverse, 9, volt);
+    // outputs colors based on team color selection
+    else if (colorScoreOn == true){
+      // outputs blue balls to desired output
+      if (blueGood == true){
+        // R1 - Blue Top Outtake
+        if(Controller1.ButtonR1.pressing()){
+          blueTop();
+        }
+        // R2 - Blue Middle Outtake
+        else if(Controller1.ButtonR2.pressing()){
+          blueMiddle();
+        }
+        // No R1 or R2 - Stop Motors
+        else{
+          chainIntake1.spin(forward, 0, volt);
+          chainIntake2.spin(forward, 0, volt);
+          intake.spin(reverse, 0, volt);
+          outtake.spin(forward, 0, volt);
+        }
+      }// A - Chain Intake In
+      else if(Controller1.ButtonA.pressing()) 
+      {
+        chainIntake1.spin(forward, 12, volt);
+        chainIntake2.spin(forward, 12, volt);
+      }
+      // B - Chain Intake Out
+      else if(Controller1.ButtonB.pressing()) 
+      {
+        chainIntake1.spin(reverse, 12, volt);
+        chainIntake2.spin(reverse, 12, volt);
+      }
+        // outputs Red balls to desired output
+        else if(blueGood == false){
+          // R1 - Red Top Outtake
+          if(Controller1.ButtonR1.pressing()){
+            blueMiddle();
+          }
+           // R2 - Red Middle Outtake
+          else if(Controller1.ButtonR2.pressing()){
+            blueTop();
+          }
+          // No R1 or R2 - Stop Motors
+          else{
+            chainIntake1.spin(forward, 0, volt);
+            chainIntake2.spin(forward, 0, volt);
+            intake.spin(reverse, 0, volt);
+            outtake.spin(forward, 0, volt);
+          }
+        }
+      } else if(colorScoreOn == false){
+      // R1 - No Color Top Outtake
+      if(Controller1.ButtonR1.pressing()){ 
+        chainIntake1.spin(forward, 12, volt);
+        chainIntake2.spin(forward, 12, volt);
+        outtake.spin(reverse, 9, volt);
+      }
+      // R2 - No Color Middle Outtake
+      else if(Controller1.ButtonR2.pressing()){
+        chainIntake1.spin(forward, 12, volt);
+        chainIntake2.spin(forward, 12, volt);
+        outtake.spin(forward, 9, volt);
+      }
+      // No R1 or R2 - Stop Motors
+      else{
+        chainIntake1.spin(forward, 0, volt); 
+        chainIntake2.spin(forward, 0, volt);
+        intake.spin(reverse, 0, volt);
+        outtake.spin(forward, 0, volt);
+      }
     }
-    else if(Controller1.ButtonR2.pressing()) 
-    {
-      chainIntake1.spin(forward, 12, volt);
-      chainIntake2.spin(forward, 12, volt);
-      outtake.spin(forward, 9, volt);
-    }
-    else if(Controller1.ButtonA.pressing()) 
-    {
-      chainIntake1.spin(forward, 12, volt);
-      chainIntake2.spin(forward, 12, volt);
-    }
-    else if(Controller1.ButtonB.pressing()) 
-    {
-      chainIntake1.spin(reverse, 12, volt);
-      chainIntake2.spin(reverse, 12, volt);
-    }
+    // No Buttons Pressed - Stop Motors
     else
-    { 
+    {
       chainIntake1.spin(forward, 0, volt);
       chainIntake2.spin(forward, 0, volt);
       intake.spin(reverse, 0, volt);
       outtake.spin(forward, 0, volt);
-    }
-    
+    }    
     chassis.arcade();
     wait(20, msec); // Sleep the task for a short amount of time to
+    }
   }
-}
 
 
 int main() 
@@ -296,12 +321,12 @@ void setDriveTrainConstants()
 {
     // Set the Drive PID values for the DriveTrain
     chassis.setDriveConstants(
-        0.6, // Kp - Proportion Constant
-        0.031, // Ki - Integral Constant
-        0.0, // Kd - Derivative Constant
+        0.666, // Kp - Proportion Constant
+        0.003, // Ki - Integral Constant
+        0.003, // Kd - Derivative Constant
         1, // Settle Error
         500, // Time to Settle
-        300000 // End Time
+        3000 // End Time
     );
 
     // Set the Turn PID values for the DriveTrain

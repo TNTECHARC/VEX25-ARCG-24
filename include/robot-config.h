@@ -31,3 +31,7 @@ extern rotation rotation2;
 
 extern inertial inertial1;
 
+extern optical bottomColorSensor;
+extern optical topColorSensor;
+
+

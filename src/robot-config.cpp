@@ -34,13 +34,21 @@ motor L4 = motor(PORT7, ratio6_1, false);
 
 //////////// Odometry Sensors ////////////
 //TODO: CHANGE THE NAMES OF THESE
-rotation forwardR = rotation(PORT9);
-rotation lateral = rotation(PORT2);
+rotation rotation1 = rotation(PORT9);
+rotation rotation2 = rotation(PORT2);
 
 /////////////////////////////////////////
 
 //////////// Inertial Sensors ////////////
 
 inertial inertial1 = inertial(PORT6);
+
+/////////////////////////////////////////
+
+//////////// Optical Sensors ////////////
+
+optical bottomColorSensor = optical(PORT15); // replace port
+optical topColorSensor = optical(PORT12); // replace port
+
 
 /////////////////////////////////////////

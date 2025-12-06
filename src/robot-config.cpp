@@ -41,7 +41,7 @@ rotation rotation2 = rotation(PORT2);
 
 //////////// Inertial Sensors ////////////
 
-inertial inertial1 = inertial(PORT6);
+inertial inertial1 = inertial(PORT11);
 
 /////////////////////////////////////////
 

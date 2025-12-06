@@ -231,20 +231,25 @@ void Drive::driveDistance(float distance, float maxVoltage)
 
         // Sets the linear output and angular output to the output of the error passed through the PID compute functions
         float linearOutput = linearPID.compute(linearError);
+        std:: cout << "Linear Error: " << linearError << " Linear Output: " << linearOutput << std::endl;
         float angularOutput = angularPID.compute(angularError);
 
         // Clamps the values of the output to fit within the -12 to 12 volt limit of the vex motors
         linearOutput = clamp(linearOutput, -maxVoltage, maxVoltage);
         angularOutput = clamp(angularOutput, -maxVoltage, maxVoltage);
 
+        if(fabs(linearError) < 2 && fabs(linearOutput) > .1){
+            linearOutput = (linearOutput/fabs(linearOutput)) * 3;
+        }
+
         // Drives motors according to the linear Output and includes the linear Output to keep the robot in a straight path relative to is start heading
         driveMotors(linearOutput + angularOutput, linearOutput - angularOutput);
         wait(10, msec);
     }
 
-    
+    std::cout << "OUT OF LOOP" << std::endl;
     // Stops the motors once PID has settled
-    //brake();
+    brake();
     updatePosition();
 }
 
@@ -278,7 +283,9 @@ void Drive::turnToAngle(float angle, float maxVoltage)
     PID turnPID(turnKp, turnKi, turnKd, turnSettleError, turnTimeToSettle, turnEndTime);
     do
     {
+        std::cout << "Current Heading: " << inertial1.heading() << std::endl;
         float error = inTermsOfNegative180To180(inertial1.heading()-angle);
+        std::cout << "Turn Error: " << error << std::endl;
         float output = turnPID.compute(error);
         output = clamp(output, -maxVoltage, maxVoltage);
         driveMotors(-output, output);
